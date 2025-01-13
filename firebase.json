@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "chat-app-759db",
+          "appId": "1:933931510078:android:e6eecccc304e705d48646f",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "chat-app-759db",
+          "configurations": {
+            "android": "1:933931510078:android:e6eecccc304e705d48646f",
+            "ios": "1:933931510078:ios:e3b5bc260ee865b348646f",
+            "web": "1:933931510078:web:170aa1adb6d2853148646f"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}
