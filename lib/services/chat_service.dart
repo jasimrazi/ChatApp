@@ -30,10 +30,14 @@ class ChatService {
   }
 
   // Send a message
+    // Send a message
   Future<void> sendMessage(String receiver, String message,
-      {String? imageUrl}) async {
-    if (message.trim().isEmpty && (imageUrl == null || imageUrl.isEmpty)) {
-      print('Message or image is empty.');
+      {String? imageUrl, String? audioUrl}) async {
+    // Ensure the message or one of the URLs is not empty
+    if (message.trim().isEmpty &&
+        (imageUrl == null || imageUrl.isEmpty) &&
+        (audioUrl == null || audioUrl.isEmpty)) {
+      print('Message, image, and audio are all empty.');
       return;
     }
 
@@ -41,7 +45,8 @@ class ChatService {
       String sender = _auth.currentUser!.uid;
       String chatroomID = generateChatID(receiver);
 
-      print('Sending message: "$message" with imageUrl: $imageUrl');
+      print(
+          'Sending message: "$message" with imageUrl: $imageUrl and audioUrl: $audioUrl');
 
       // Add message to Firestore
       await _firestore
@@ -52,7 +57,8 @@ class ChatService {
         'sender': sender,
         'receiver': receiver,
         'message': message.trim(),
-        'imageUrl': imageUrl ?? '',
+        'imageUrl': imageUrl ?? '', // Ensure non-null values for Firestore
+        'audioUrl': audioUrl ?? '',
         'timestamp': FieldValue.serverTimestamp(),
       });
 
@@ -73,6 +79,7 @@ class ChatService {
       print('Error sending message: $e');
     }
   }
+
 
 
   //Stream to get all messages

@@ -2,9 +2,14 @@ import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/services/chat_service.dart';
 import 'package:chat_app/services/cloudinary_service.dart';
 import 'package:chat_app/widgets/message_container.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 
 class ChatPage extends StatefulWidget {
   final String name;
@@ -24,23 +29,41 @@ class _ChatPageState extends State<ChatPage> {
   final CloudinaryService _cloudinaryService = CloudinaryService();
 
   bool isOtherUserTyping = false;
+  bool isRecording = false;
   String? _currentUserId;
+  String? _audioFilePath;
+  bool isMessage = false;
+
+  late final FlutterSoundRecorder _recorder;
+  late final RecorderController _recorderController;
 
   @override
   void initState() {
     super.initState();
+    _recorder = FlutterSoundRecorder();
+    _recorderController = RecorderController();
+    _initializeRecorder();
     _currentUserId = _authService.getCurrentUser()!.uid;
-
-    print('Current user: ${_currentUserId}');
 
     // Listen to typing status
     _chatService.listenToTypingStatus(widget.receiver).listen((typingData) {
       setState(() {
-        // Check if the typing user is different from the current user
         isOtherUserTyping = typingData['isTyping'] == true &&
             typingData['typingUserId'] != _currentUserId;
       });
     });
+  }
+
+  Future<void> _initializeRecorder() async {
+    await _recorder.openRecorder();
+    await _recorder.setSubscriptionDuration(Duration(milliseconds: 50));
+  }
+
+  @override
+  void dispose() {
+    _recorder.closeRecorder();
+    _recorderController.dispose();
+    super.dispose();
   }
 
   void _sendMessage() {
@@ -51,15 +74,20 @@ class _ChatPageState extends State<ChatPage> {
         imageUrl: null,
       );
       _messageController.clear();
-      // Reset typing status when message is sent
-      _chatService.updateTypingStatus(widget.receiver, false,);
+      _chatService.updateTypingStatus(widget.receiver, false);
     }
   }
 
   void _onMessageTyping() {
     final bool isTyping = _messageController.text.isNotEmpty;
-    _chatService.updateTypingStatus(widget.receiver, isTyping,
-        typingUserId: _currentUserId);
+    _chatService.updateTypingStatus(
+      widget.receiver,
+      isTyping,
+      typingUserId: _currentUserId,
+    );
+    setState(() {
+      isMessage = true;
+    });
   }
 
   Future<void> _pickImage() async {
@@ -68,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
       File file = File(image.path);
       if (await file.exists()) {
         try {
-          String imageUrl = await _cloudinaryService.uploadImage(file);
+          String imageUrl = await _cloudinaryService.uploadFile(file);
           if (imageUrl.isNotEmpty) {
             _chatService.sendMessage(widget.receiver, '', imageUrl: imageUrl);
           } else {
@@ -83,12 +111,56 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  Future<void> _startRecording() async {
+    try {
+      setState(() => isRecording = true);
+
+      // Generate a file path for the recording
+      final tempDir = await getTemporaryDirectory();
+      _audioFilePath =
+          '${tempDir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.aac';
+
+      // Start the recorder
+      await _recorder.startRecorder(
+        toFile: _audioFilePath,
+      );
+
+      // Start the waveform animation
+      _recorderController.record();
+    } catch (e) {
+      print('Error while starting recording: $e');
+    }
+  }
+
+  Future<void> _stopRecording() async {
+    try {
+      setState(() => isRecording = false);
+
+      // Stop the recorder and waveform animation
+      _recorderController.stop();
+      await _recorder.stopRecorder();
+
+      if (_audioFilePath != null) {
+        String uploadedUrl =
+            await _cloudinaryService.uploadFile(File(_audioFilePath!));
+        if (uploadedUrl.isNotEmpty) {
+          _chatService.sendMessage(widget.receiver, '', audioUrl: uploadedUrl);
+        }
+      }
+    } catch (e) {
+      print('Error while stopping recording: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
-        centerTitle: true,
+        title: Text(
+          widget.name,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       ),
       body: Column(
         children: [
@@ -97,7 +169,7 @@ class _ChatPageState extends State<ChatPage> {
               stream: _chatService.getMessages(widget.receiver),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: CupertinoActivityIndicator());
                 }
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
@@ -115,6 +187,7 @@ class _ChatPageState extends State<ChatPage> {
                     return MessageContainer(
                       message: message['message'],
                       imageUrl: message['imageUrl'] ?? '',
+                      audioUrl: message['audioUrl'] ?? '',
                       sender: message['sender'],
                       timestamp: message['timestamp'],
                       currentUserId: _currentUserId!,
@@ -134,36 +207,86 @@ class _ChatPageState extends State<ChatPage> {
             ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type a message...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      hintStyle: TextStyle(color: Colors.grey),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    ),
-                    onChanged: (text) {
-                      _onMessageTyping();
-                    },
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10.0,
                   ),
-                ),
-                IconButton(
-                  onPressed: _pickImage,
-                  icon: Icon(Icons.image),
-                  color: Colors.deepPurple,
-                ),
-                IconButton(
-                  onPressed: _sendMessage,
-                  icon: Icon(Icons.send),
-                  color: Colors.deepPurple,
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: isRecording
+                        ? AudioWaveforms(
+                            size: Size(double.infinity, 40.0),
+                            recorderController: _recorderController,
+                            waveStyle: WaveStyle(
+                              waveColor: Colors.blue,
+                              extendWaveform: true,
+                              showMiddleLine: false,
+                            ),
+                          )
+                        : TextField(
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                              hintText: 'Type here...',
+                              filled: true,
+                              fillColor: Colors.black12.withOpacity(0.05),
+                              border: InputBorder.none,
+                              hintStyle: TextStyle(color: Colors.grey),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide.none,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.attach_file,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: _pickImage,
+                              ),
+                            ),
+                            onChanged: (text) {
+                              _onMessageTyping();
+                            },
+                          ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: IconButton(
+                      onPressed: isMessage
+                          ? _sendMessage // Send message if typing
+                          : (isRecording
+                              ? _stopRecording
+                              : _startRecording), // Record if not typing
+                      icon: Icon(
+                        isMessage
+                            ? Icons.send // Send icon when typing
+                            : (isRecording
+                                ? Icons.stop
+                                : Icons.mic), // Mic or Stop
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

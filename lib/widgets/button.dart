@@ -2,7 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key, required this.label, required this.ontap, required this.isLoading});
+  const CustomButton(
+      {super.key,
+      required this.label,
+      required this.ontap,
+      required this.isLoading});
 
   final String label;
   final VoidCallback ontap;
@@ -16,16 +20,19 @@ class CustomButton extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 10),
         padding: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-            color: Colors.deepPurple, borderRadius: BorderRadius.circular(10)),
+            color: Colors.blue, borderRadius: BorderRadius.circular(10)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            isLoading ? CupertinoActivityIndicator(color: Colors.white,) :
-            Text(
-              label,
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            )
+            isLoading
+                ? CupertinoActivityIndicator(
+                    color: Colors.white,
+                  )
+                : Text(
+                    label,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )
           ],
         ),
       ),

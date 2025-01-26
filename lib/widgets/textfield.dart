@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomTextfield extends StatelessWidget {
-  const CustomTextfield({super.key, required this.hintext, required this.controller});
+  const CustomTextfield(
+      {super.key, required this.hintext, required this.controller});
 
   final String hintext;
   final TextEditingController controller;
@@ -14,9 +15,9 @@ class CustomTextfield extends StatelessWidget {
           hintText: hintext,
           hintStyle: TextStyle(color: Colors.grey),
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepPurpleAccent)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepPurple))),
+              borderSide: BorderSide(color: Colors.blueAccent)),
+          focusedBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: Colors.blue))),
     );
   }
 }

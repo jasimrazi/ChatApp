@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 50),
                 const Text(
                   'Login Page',
-                  style: TextStyle(color: Colors.deepPurple, fontSize: 24),
+                  style: TextStyle(color: Colors.blue, fontSize: 24),
                 ),
                 SizedBox(height: 200),
                 CustomTextfield(
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Text(
                         'Register',
-                        style: TextStyle(color: Colors.deepPurple),
+                        style: TextStyle(color: Colors.blue),
                       ),
                     ),
                   ],

@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(
           'Home Page',
-          style: TextStyle(color: Colors.deepPurple),
+          style: TextStyle(color: Colors.blue),
         ),
         actions: [
           IconButton(

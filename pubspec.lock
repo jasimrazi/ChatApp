@@ -25,6 +25,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  audio_session:
+    dependency: transitive
+    description:
+      name: audio_session
+      sha256: b2a26ba8b7efa1790d6460e82971fde3e398cfbe2295df9dea22f3499d2c12a7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.23"
+  audio_waveforms:
+    dependency: "direct main"
+    description:
+      name: audio_waveforms
+      sha256: "26531204e539708a51a33096a9d509a68f9a748dd1fe1582c5da25add8daa041"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -193,6 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  etau:
+    dependency: transitive
+    description:
+      name: etau
+      sha256: "4b43a615ecceb1de7c5a35f0a159920b4fdb8ce5a33d71d3828a31efedc67572"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.14-alpha.4"
   fake_async:
     dependency: transitive
     description:
@@ -358,6 +382,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.24"
+  flutter_sound:
+    dependency: "direct main"
+    description:
+      name: flutter_sound
+      sha256: "08e375d699d85e1a823e250d4c01596eadd92ddf8918b6825e4f23e4dd97cddb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.19.1"
+  flutter_sound_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_sound_platform_interface
+      sha256: "07d11ca22b1c2e3ffc7c26f0bb6d869c67cef802ff9832e91c9c5e95a3355f6d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.19.1"
+  flutter_sound_web:
+    dependency: transitive
+    description:
+      name: flutter_sound_web
+      sha256: "6f7a954947c18a5b2c2294ecea639c38c266430f6e30b19473191eebc7ab66bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.19.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -472,6 +520,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.1"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -504,6 +560,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: be4b23575aac7ebf01f225a241eb7f6b5641eeaf43c6a8613510fc2f8cf187d1
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   matcher:
     dependency: transitive
     description:
@@ -536,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   octo_image:
     dependency: transitive
     description:
@@ -561,7 +633,7 @@ packages:
     source: hosted
     version: "1.9.0"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -632,6 +704,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   rxdart:
     dependency: transitive
     description:
@@ -789,6 +877,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0+3"
+  tau_web:
+    dependency: transitive
+    description:
+      name: tau_web
+      sha256: c612cd3dcd9b7aa3472c0272bf3531fc232cd80e53ed7d7388b77dd541720cd6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.14-alpha.4"
   term_glyph:
     dependency: transitive
     description:

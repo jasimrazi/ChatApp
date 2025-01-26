@@ -53,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
             MaterialPageRoute(
               builder: (context) => HomePage(),
             ));
-            
+
         CustomToast.showToast(msg: "Registration Successful");
       }
     } on FirebaseAuthException catch (e) {
@@ -83,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const Text(
                   'Register Page',
-                  style: TextStyle(color: Colors.deepPurple, fontSize: 24),
+                  style: TextStyle(color: Colors.blue, fontSize: 24),
                 ),
                 SizedBox(
                   height: 200,
@@ -134,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: Text(
                           'Login',
-                          style: TextStyle(color: Colors.deepPurple),
+                          style: TextStyle(color: Colors.blue),
                         ))
                   ],
                 )
